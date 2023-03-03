@@ -8,14 +8,41 @@ await fetch(
 ).then((r) =>
   r.body?.pipeTo(Deno.createSync("./queries/nim/highlights.scm").writable)
 );
-// FIXME: Indents seems to not work with indent-blankline.nvim
-// await fetch(
-//   "https://raw.githubusercontent.com/j-james/helix/nim/runtime/queries/nim/indents.scm",
-// ).then((r) =>
-//   r.body?.pipeTo(Deno.createSync("./queries/nim/indents.scm").writable)
-// );
 
-// Note: does nvim even use this?
+function portIndents(path: string) {
+  // look for the index of @extend
+  // remove it with its pattern
+  const deleteGroup = (group: string) => {
+    const qr = Deno.readTextFileSync(path);
+    {
+      const extendIndex = qr.indexOf(group);
+      const startOfpattern = qr.slice(0, extendIndex).lastIndexOf("[");
+      Deno.writeTextFileSync(
+        path,
+        qr.slice(0, startOfpattern - 1) +
+          qr.slice(extendIndex + group.length),
+      );
+    }
+  };
+  deleteGroup("@extend");
+  deleteGroup("@extend.prevent-once");
+
+  // replace @outdent by @dedent
+  Deno.writeTextFileSync(
+    path,
+    Deno.readTextFileSync(path).replaceAll("outdent", "dedent"),
+  );
+}
+
+await fetch(
+  "https://raw.githubusercontent.com/j-james/helix/nim/runtime/queries/nim/indents.scm",
+).then((r) =>
+  r.body?.pipeTo(Deno.createSync("./queries/nim/indents.scm").writable)
+);
+portIndents("./queries/nim/indents.scm");
+
+// Note: Not supported natively in nvim, but there is a plugin for this
+// https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 await fetch(
   "https://raw.githubusercontent.com/j-james/helix/nim/runtime/queries/nim/textobjects.scm",
 ).then((r) =>
