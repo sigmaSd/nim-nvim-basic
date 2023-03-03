@@ -8,12 +8,12 @@
 (paramList
   (paramColonEquals) @parameter.inside) @parameter.around
 
-(comment) comment.inside
-(multilineComment) comment.inside
-(docComment) comment.inside
-(multilineDocComment) comment.inside
+(comment) @comment.inside
+(multilineComment) @comment.inside
+(docComment) @comment.inside
+(multilineDocComment) @comment.inside
 
-(comment)+ comment.around
-(multilineComment) comment.around
-(docComment)+ comment.around
-(multilineDocComment) comment.around
+(comment)+ @comment.around
+(multilineComment) @comment.around
+(docComment)+ @comment.around
+(multilineDocComment) @comment.around
