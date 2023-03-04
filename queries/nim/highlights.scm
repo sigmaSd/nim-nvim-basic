@@ -33,11 +33,21 @@
   (symbol) @variable)
 (whileStmt (keyw) @keyword.control.repeat)
 
-(importStmt (keyw) @keyword.control.import) @namespace
-(importExceptStmt (keyw) @keyword.control.import) @namespace
-(exportStmt (keyw) @keyword.control.import) @namespace
-(fromStmt (keyw) @keyword.control.import) @namespace
-(includeStmt (keyw) @keyword.control.import) @namespace
+(importStmt
+  (keyw) @keyword.control.import
+  (expr (primary (symbol) @namespace)))
+(importExceptStmt
+  (keyw) @keyword.control.import
+  (expr (primary (symbol) @namespace)))
+(exportStmt
+  (keyw) @keyword.control.import
+  (expr (primary (symbol) @namespace)))
+(fromStmt
+  (keyw) @keyword.control.import
+  (expr (primary (symbol) @namespace)))
+(includeStmt
+  (keyw) @keyword.control.import
+  (expr (primary (symbol) @namespace)))
 
 (returnStmt (keyw) @keyword.control.repeat)
 (yieldStmt (keyw) @keyword.control.repeat)
@@ -72,22 +82,51 @@
   (keyw) @keyword.storage.type
   (symbol) @type)
 
-; fixme: introspect
-(typeDesc) @type
+(typeDesc
+  (primaryTypeDesc
+    (symbol) @type))
 
-(variable
-  (keyw) @keyword.storage.type
-  (declColonEquals
-    (symbol) @variable))
+(primary
+  (primarySuffix
+    (indexSuffix
+      (exprColonEqExprList
+        (exprColonEqExpr
+          (expr
+            (primary
+              (symbol) @type)))))))
 
-(paramList
-  (paramColonEquals
-    (symbol) @variable.parameter))
+(primaryTypeDef
+  (symbol) @type
+  (primarySuffix
+    (indexSuffix
+      (exprColonEqExprList
+        (exprColonEqExpr
+          (expr
+            (primary
+              (symbol) @type)))))))
 
-; broken
-; (enumDecl
-;   (declColonEquals
-;     (symbol) @type.enum.variant))
+(primaryTypeDesc
+  (primarySuffix
+    (indexSuffix
+      (exprColonEqExprList
+        (exprColonEqExpr
+          (expr
+            (primary
+              (symbol) @type)))))))
+
+(genericParamList
+  (genericParam
+    (symbol) @type))
+
+(enumDecl
+  (enumElement
+    (symbol) @type.enum.variant))
+
+(symbolColonExpr
+  (symbol) @variable.parameter
+  (expr
+    (primary
+      (symbol) @type)))
 
 (enumDecl (keyw) @keyword.storage.modifier)
 (tupleDecl (keyw) @keyword.storage.modifier)
@@ -163,11 +202,6 @@
 
 (pragma) @attribute
 
-; broken
-; ["result"] @variable.builtin ; in function scopes only
-; [] @variable.other
-; [] @variable.other.member
-
 (routine
   . (keyw) @keyword.function
   . (ident) @function)
@@ -180,10 +214,51 @@
   (primarySuffix (qualifiedSuffix (symbol (ident) @function.call)))
   . (primarySuffix (functionCall)))
 
+; somehow breaks ordinary function calls
+; (primary
+;   (symbol) @function.call
+;   (primarySuffix
+;     (objectConstr
+;       (symbolColonExpr
+;         (symbol) @variable))))
+
+; todo: identify `echo "foo"` as a function call
+
 ; does not appear to be a way to distinguish these without verbatium matching
 ; [] @function.builtin
 ; [] @function.method
 ; [] @function.macro
 ; [] @function.special
+
+(variable
+  (keyw) @keyword.storage.type
+  (declColonEquals
+    (symbol) @variable))
+
+(expr
+  (primary
+    (symbol) @variable))
+
+; note: both this and exprStmt MUST come after the function queries
+(expr
+  (primary
+    (primarySuffix
+      (qualifiedSuffix
+        (symbol
+          (ident) @variable)))))
+(exprStmt
+  (primary
+    (symbol) @variable))
+
+(exprStmt
+  (primary
+    (primarySuffix
+      (qualifiedSuffix
+        (symbol
+          (ident) @variable)))))
+
+(paramList
+  (paramColonEquals
+    (symbol) @variable.parameter))
 
 (keyw) @keyword
