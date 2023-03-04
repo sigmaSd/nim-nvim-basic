@@ -15,53 +15,53 @@
 (mixinStmt (keyw) @keyword)
 
 (blockStmt
-  (keyw) @keyword.control
+  (keyw) @keyword
   (symbol) @label)
 
-(ifStmt (keyw) @keyword.control.conditional)
-(whenStmt (keyw) @keyword.control.conditional)
-(elifStmt (keyw) @keyword.control.conditional)
-(elseStmt (keyw) @keyword.control.conditional)
-(caseStmt (keyw) @keyword.control.conditional)
-(ofBranch (keyw) @keyword.control.conditional)
-(inlineIfStmt (keyw) @keyword.control.conditional)
-(inlineWhenStmt (keyw) @keyword.control.conditional)
+(ifStmt (keyw) @conditional)
+(whenStmt (keyw) @conditional)
+(elifStmt (keyw) @conditional)
+(elseStmt (keyw) @conditional)
+(caseStmt (keyw) @conditional)
+(ofBranch (keyw) @conditional)
+(inlineIfStmt (keyw) @conditional)
+(inlineWhenStmt (keyw) @conditional)
 ; todo: do
 
 (forStmt
-  (keyw) @keyword.control.repeat
+  (keyw) @repeat
   (symbol) @variable)
-(whileStmt (keyw) @keyword.control.repeat)
+(whileStmt (keyw) @repeat)
 
 (importStmt
-  (keyw) @keyword.control.import
-  (expr (primary (symbol) @namespace)))
+  (keyw) @include
+  (expr (primary (symbol) @include)))
 (importExceptStmt
-  (keyw) @keyword.control.import
-  (expr (primary (symbol) @namespace)))
+  (keyw) @include
+  (expr (primary (symbol) @include)))
 (exportStmt
-  (keyw) @keyword.control.import
-  (expr (primary (symbol) @namespace)))
+  (keyw) @include
+  (expr (primary (symbol) @include)))
 (fromStmt
-  (keyw) @keyword.control.import
-  (expr (primary (symbol) @namespace)))
+  (keyw) @include
+  (expr (primary (symbol) @include)))
 (includeStmt
-  (keyw) @keyword.control.import
-  (expr (primary (symbol) @namespace)))
+  (keyw) @include
+  (expr (primary (symbol) @include)))
 
-(returnStmt (keyw) @keyword.control.repeat)
-(yieldStmt (keyw) @keyword.control.repeat)
-(discardStmt (keyw) @keyword.control.repeat)
-(breakStmt (keyw) @keyword.control.repeat)
-(continueStmt (keyw) @keyword.control.repeat)
+(returnStmt (keyw) @keyword.return)
+(yieldStmt (keyw) @keyword.return)
+(discardStmt (keyw) @keyword.return)
+(breakStmt (keyw) @keyword.return)
+(continueStmt (keyw) @keyword.return)
 
-(raiseStmt (keyw) @keyword.control.exception)
-(tryStmt (keyw) @keyword.control.exception)
-(tryExceptStmt (keyw) @keyword.control.exception)
-(tryFinallyStmt (keyw) @keyword.control.exception)
-(inlineTryStmt (keyw) @keyword.control.exception)
-; (inlineTryExceptStmt (keyw) @keyword.control.exception)
-; (inlineTryFinallyStmt (keyw) @keyword.control.exception)
+(raiseStmt (keyw) @exception)
+(tryStmt (keyw) @exception)
+(tryExceptStmt (keyw) @exception)
+(tryFinallyStmt (keyw) @exception)
+(inlineTryStmt (keyw) @exception)
+; (inlineTryExceptStmt (keyw) @exception)
+; (inlineTryFinallyStmt (keyw) @exception)
 
 [
   "and"
@@ -79,7 +79,7 @@
 ] @keyword.operator
 
 (typeDef
-  (keyw) @keyword.storage.type
+  (keyw) @type.definition
   (symbol) @type)
 
 (typeDesc
@@ -120,16 +120,16 @@
 
 (enumDecl
   (enumElement
-    (symbol) @type.enum.variant))
+    (symbol) @type))
 
 (symbolColonExpr
-  (symbol) @variable.parameter
+  (symbol) @parameter
   (expr
     (primary
       (symbol) @type)))
 
-(enumDecl (keyw) @keyword.storage.modifier)
-(tupleDecl (keyw) @keyword.storage.modifier)
+(enumDecl (keyw) @type.definition)
+(tupleDecl (keyw) @type.definition)
 ; objectDecl, conceptDecl not implemented
 ; distinct?
 
@@ -181,24 +181,20 @@
 
 [(literal) (generalizedLit)] @constant
 [(nil_lit)] @constant.builtin
-[(bool_lit)] @constant.builtin.boolean
-[(char_lit)] @constant.character
-[(char_esc_seq)] @constant.character.escape
-[(custom_numeric_lit)] @constant.numeric
-[(int_lit) (int_suffix)] @constant.numeric.integer
-[(float_lit) (float_suffix)] @constant.numeric.float
+[(bool_lit)] @boolean
+[(char_lit)] @character
+[(char_esc_seq)] @character.special
+[(custom_numeric_lit)] @number
+[(int_lit) (int_suffix)] @number
+[(float_lit) (float_suffix)] @float
 
 [(str_lit) (triplestr_lit)] @string
-; [] @string.regexp
 [(generalized_str_lit) (generalized_triplestr_lit)] @string.special
-; [] @string.special.path
-; [] @string.special.url
-; [] @string.special.symbol
 
-(comment) @comment.line
-(multilineComment) @comment.block
-(docComment) @comment.documentation
-(multilineDocComment) @comment.block.documentation
+(comment) @comment
+(multilineComment) @comment
+(docComment) @comment
+(multilineDocComment) @comment
 
 (pragma) @attribute
 
@@ -226,12 +222,10 @@
 
 ; does not appear to be a way to distinguish these without verbatium matching
 ; [] @function.builtin
-; [] @function.method
 ; [] @function.macro
-; [] @function.special
 
 (variable
-  (keyw) @keyword.storage.type
+  (keyw) @type.definition
   (declColonEquals
     (symbol) @variable))
 
@@ -259,6 +253,6 @@
 
 (paramList
   (paramColonEquals
-    (symbol) @variable.parameter))
+    (symbol) @parameter))
 
 (keyw) @keyword
