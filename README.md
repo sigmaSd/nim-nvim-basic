@@ -9,6 +9,17 @@ Add the plugin
 'sigmaSd/nim-nvim-basic'
 ```
 
+```lua
+{
+    'sigmaSd/nim-nvim-basic'
+    config = function()
+        require("nim-nvim").setup()
+    end,
+    -- If you're using Lazy, you can lazy load this plugin on file type event == "nim"
+    ft="nim"
+}
+```
+
 Then run `:TSInstall nim`
 
 ## Info

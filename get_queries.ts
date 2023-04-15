@@ -6,13 +6,13 @@ const cwd = Deno.cwd();
 Deno.chdir(Deno.makeTempDirSync());
 await $`git clone --depth 1 --single-branch https://github.com/j-james/nvim-treesitter`;
 
-ensureDirSync(path.join(cwd, "./plugin"));
+ensureDirSync(path.join(cwd, "./lua/nim-nvim"));
 ensureDirSync(path.join(cwd, "./queries/nim"));
 
 await $`cp nvim-treesitter/lua/nvim-treesitter/parsers.lua ${
-  path.join(cwd, "./plugin/")
+  path.join(cwd, "./lua/nim-nvim/init.lua")
 }`;
-keepOnlyNim(path.join(cwd, "./plugin/parsers.lua"));
+keepOnlyNim(path.join(cwd, "./lua/nim-nvim/init.lua"));
 
 await $`cp nvim-treesitter/queries/nim/highlights.scm ${
   path.join(cwd, "./queries/nim")
@@ -44,7 +44,13 @@ function keepOnlyNim(path: string) {
 
   Deno.writeTextFileSync(
     path,
-    `local list = require "nvim-treesitter.parsers".get_parser_configs()
-${lua.slice(start, end + 1)}`,
+    `local M = {}
+
+function M.setup()
+  local list = require "nvim-treesitter.parsers".get_parser_configs()
+  ${lua.slice(start, end + 1)}
+end
+
+return M`,
   );
 }

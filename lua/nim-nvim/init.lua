@@ -1,5 +1,8 @@
-local list = require "nvim-treesitter.parsers".get_parser_configs()
-list.nim = {
+local M = {}
+
+function M.setup()
+  local list = require "nvim-treesitter.parsers".get_parser_configs()
+  list.nim = {
   install_info = {
     url = "https://github.com/aMOPel/tree-sitter-nim",
     files = { "src/parser.c", "src/scanner.cc" },
@@ -7,3 +10,6 @@ list.nim = {
   },
   maintainers = { "@j-james" },
 }
+end
+
+return M
